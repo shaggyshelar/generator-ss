@@ -1,0 +1,60 @@
+{
+    "excludeFiles": [ "node_modules/**", "vendor/**", "src/client/app/libs/**", "src/client/**/*.spec.js" ],
+
+    "requireCurlyBraces": [
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "try",
+        "catch"
+    ],
+    "requireOperatorBeforeLineBreak": true,
+    "requireCamelCaseOrUpperCaseIdentifiers": true,
+    "maximumLineLength": {
+        "value": 120,
+        "allowComments": true,
+        "allowRegex": true
+    },
+    "validateIndentation": 4,
+    "validateQuoteMarks": "'",
+
+    "disallowMultipleLineStrings": true,
+    "disallowMixedSpacesAndTabs": true,
+    "disallowTrailingWhitespace": true,
+    "disallowMultipleVarDecl": null,
+
+    "requireSpaceAfterKeywords": [
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "switch",
+        "return",
+        "try",
+        "catch"
+    ],
+    "requireSpaceBeforeBinaryOperators": ["=","+=","-=","*=","/=","%=","<<=",">>=",
+      ">>>=","&=","|=","^=","+=","+","-","*","/","%","<<",">>",">>>","&","|","^","&&",
+      "||","===","==",">=","<=","<",">","!=","!=="],
+    "requireSpaceAfterBinaryOperators": true,
+    "requireSpacesInConditionalExpression": true,
+    "requireSpaceBeforeBlockStatements": true,
+    "disallowSpacesInsideArrayBrackets": "all",
+    "disallowSpacesInsideParentheses": true,
+    "disallowMultipleLineBreaks": true,
+    "disallowKeywordsInComments": ["neethu", "rushikesh","sagar","vishal"],
+    "disallowCommaBeforeLineBreak": null,
+    "disallowSpaceAfterPrefixUnaryOperators": ["++", "--", "+", "-"],
+    "disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
+    "disallowDanglingUnderscores": true,
+    "disallowEmptyBlocks": true,
+    "disallowTrailingComma": true,
+    "requireCommaBeforeLineBreak": true,
+    "disallowSpaceBeforeSemicolon": true,
+    "requireDotNotation": true,
+    "requireMultipleVarDecl": null,
+    "requireParenthesesAroundIIFE": true
+}
