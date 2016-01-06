@@ -2,43 +2,54 @@
 var generators = require('yeoman-generator'),
     _ = require('lodash');
 
-module.exports = generators.NamedBase.extend({
+module.exports = generators.Base.extend({
     constructor: function () {
-        generators.NamedBase.apply(this, arguments);
-        this.option('tests', {
-            desc: 'Determines if tests folder is to be created along with other files',
-            type: Boolean,
-            default: false
-        });
+        generators.Base.apply(this, arguments);
     },
-
-    writing: function() {
-        var fileNameFragment = getFileNameFragment(this.name);
-        console.log(fileNameFragment);
+    prompting: function () {
+        var done = this.async();
+        this.prompt([{
+            type: 'input',
+            name: 'featureName',
+            message: 'Feature name (This will be added in \'src/client/app/features/\' )',
+            default: 'default'
+        },
+            {
+                type: 'confirm',
+                name: 'includeTests',
+                message: 'Include Tests',
+                default: false
+            }], function (answers) {
+                this.log(answers);
+                this.featureName = answers.featureName;
+                done();
+            }.bind(this));
+    },
+    writing: function () {
+        var featureNameCamelCase = _.camelCase(this.featureName);
+        var featureNameCapitalCase = _.capitalize(featureNameCamelCase);
         this.fs.copyTpl(
             this.templatePath('ng-controller.js'),
-            this.destinationPath('src/client/app/features/' + fileNameFragment +
-                '/' + fileNameFragment + '.controller.js'),
+            this.destinationPath('src/client/app/features/' + featureNameCamelCase +
+                '/' + featureNameCamelCase + '.controller.js'),
             {
-                ctrlName: this.name
+                ctrlName: featureNameCapitalCase
             }
-        );
-        //
-        // if (this.options.view) {
-        //     this.fs.copyTpl(
-        //         this.templatePath('ng-view.html'),
-        //         this.destinationPath('src/app/' + fileNameFragment + '/' + fileNameFragment + '.html'),
-        //         {
-        //             name: this.name
-        //         });
-        // }
-
-        function getFileNameFragment(ctrlName) {
-            var ctrlIndex = ctrlName.indexOf('Ctrl');
-            if (ctrlIndex === (ctrlName.length - 4)) {
-                ctrlName = ctrlName.substring(0, ctrlIndex);
-            }
-            return _.kebabCase(ctrlName);
-        }
+            );
+        this.fs.copyTpl(
+            this.templatePath('ng-view.html'),
+            this.destinationPath('src/client/app/features/' + featureNameCamelCase +
+                '/' + featureNameCamelCase + '.html'),
+            {
+                name: _.startCase(featureNameCapitalCase)
+            });
+        this.fs.copyTpl(
+            this.templatePath('routes.js'),
+            this.destinationPath('src/client/app/features/' + featureNameCamelCase + '/routes.js'),
+            {
+                name: this.name,
+                featureNameCapital: featureNameCapitalCase.toUpperCase(),
+                featureNameCamelCase: featureNameCamelCase
+            });
     }
 });
