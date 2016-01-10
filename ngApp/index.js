@@ -1,6 +1,7 @@
 'use strict';
 var generators = require('yeoman-generator'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    chalk = require('chalk');
 
 module.exports = generators.Base.extend({
     constructor: function () {
@@ -13,14 +14,32 @@ module.exports = generators.Base.extend({
             name: 'ngAppName',
             message: 'Enter AngularJS app name',
             default: this.config.get('ngAppName') || 'app'
-        }], function (answers) {
-            this.log(answers);
-            this.ngAppName = answers.ngAppName;
-            this.appNameCamelCase = _.camelCase(this.ngAppName);
-            done();
-        }.bind(this));
+        }, {
+                type: 'checkbox',
+                name: 'installs',
+                message: 'Which installations would you like to perform?',
+                choices: [
+                    {
+                        name: 'npm',
+                        value: 'npm',
+                        checked: true
+                    },
+                    {
+                        name: 'bower',
+                        value: 'bower',
+                        checked: true
+                    }
+                ]
+            }], function (answers) {
+                this.log(answers);
+                this.ngAppName = answers.ngAppName;
+                this.appNameCamelCase = _.camelCase(this.ngAppName);
+                this.installNpm = _.includes(answers.installs, 'npm');
+                this.installBower = _.includes(answers.installs, 'bower');
+                done();
+            }.bind(this));
     },
-    writing: {        
+    writing: {
         gulpfile: function () {
             this.copy('_gulpfile.js', 'gulpfile.js');
             this.copy('_gulp.config.js', 'gulp.config.js');
@@ -135,7 +154,25 @@ module.exports = generators.Base.extend({
     conflicts: function () {
     },
     install: function () {
+        if (this.installNpm) {
+            this.npmInstall();
+        }
+        if (this.installBower) {
+            this.bowerInstall();
+        }
     },
     end: function () {
+        this.log(chalk.yellow.bold('\nInstallation successful!'));
+
+        var howToInstall =
+            '\nAfter running ' + chalk.yellow.bold('npm install & bower install') +
+            ', inject your front end dependencies by running ' +
+            chalk.yellow.bold('gulp wiredep') +
+            '.';
+
+        if (!this.installNpm && !this.installBower) {
+            this.log(howToInstall);
+            return;
+        }
     }
 });

@@ -1,23 +1,27 @@
 'use strict';
-var generators = require('yeoman-generator');
+var generators = require('yeoman-generator'),
+    chalk = require('chalk'),
+    yosay = require('yosay');
 
 module.exports = generators.Base.extend({
-    constructor: function(){
+    constructor: function () {
         generators.Base.apply(this, arguments);
     },
-    initializing: function(){
+    initializing: function () {
     },
-    prompting: function(){
+    prompting: function () {
+        this.log(yosay('Hey There, This is a custom generator implemented by ' +
+            chalk.yellow('Sagar Shelar ')));
     },
-    configuring: function(){
+    configuring: function () {
     },
     writing: {
     },
-    conflicts: function(){
+    conflicts: function () {
     },
-    install: function(){
+    install: function () {
     },
-    end: function() {
-        console.log('Use \'yo ss -h to see help');
+    end: function () {
+        this.log('Use ' + chalk.yellow.bold('\'yo ss -h\'') + ' to see available options');
     }
 });

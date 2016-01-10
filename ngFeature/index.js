@@ -11,9 +11,21 @@ module.exports = generators.Base.extend({
         this.prompt([{
             type: 'input',
             name: 'featureName',
-            message: 'Feature name (This will be added in \'src/client/app/features/\' )',
+            message: 'Feature name',
             default: 'default'
         },
+            {
+                type: 'input',
+                name: 'featurePath',
+                message: 'Feature path (Should end with \'/\')',
+                default: this.config.get('featurePath') || 'src/app/features/'
+            },
+            {
+                type: 'confirm',
+                name: 'addReferenceInRouteConstants',
+                message: 'Add reference in app constants?',
+                default: false
+            },
             {
                 type: 'confirm',
                 name: 'includeTests',
@@ -22,6 +34,10 @@ module.exports = generators.Base.extend({
             }], function (answers) {
                 this.log(answers);
                 this.featureName = answers.featureName;
+                this.featurePath = answers.featurePath.endsWith('/') ? answers.featurePath : answers.featurePath + '/';
+                this.config.set('featurePath',this.featurePath);
+                this.includeTests = answers.includeTests;
+                this.addReferenceInRouteConstants = answers.addReferenceInRouteConstants;
                 done();
             }.bind(this));
     },
@@ -30,7 +46,7 @@ module.exports = generators.Base.extend({
         var featureNameCapitalCase = _.capitalize(featureNameCamelCase);
         this.fs.copyTpl(
             this.templatePath('ng-controller.js'),
-            this.destinationPath('src/client/app/features/' + featureNameCamelCase +
+            this.destinationPath(this.featurePath + featureNameCamelCase +
                 '/' + featureNameCamelCase + '.controller.js'),
             {
                 ctrlName: featureNameCapitalCase
@@ -38,14 +54,14 @@ module.exports = generators.Base.extend({
             );
         this.fs.copyTpl(
             this.templatePath('ng-view.html'),
-            this.destinationPath('src/client/app/features/' + featureNameCamelCase +
+            this.destinationPath(this.featurePath + featureNameCamelCase +
                 '/' + featureNameCamelCase + '.html'),
             {
                 name: _.startCase(featureNameCapitalCase)
             });
         this.fs.copyTpl(
             this.templatePath('routes.js'),
-            this.destinationPath('src/client/app/features/' + featureNameCamelCase + '/routes.js'),
+            this.destinationPath(this.featurePath + featureNameCamelCase + '/routes.js'),
             {
                 name: this.name,
                 featureNameCapital: featureNameCapitalCase.toUpperCase(),
